@@ -1,0 +1,59 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Profile {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  bio       String?
+  avatarUrl String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
+}
+
+model Project {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String
+  repositoryUrl String?
+  deployUrl   String?
+  profileId   Int
+  profile     Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  technologies ProjectTechnology[]
+  feedbacks   Feedback[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Technology {
+  id        Int          @id @default(autoincrement())
+  name      String       @unique
+  category  String?
+  projects  ProjectTechnology[]
+  createdAt DateTime     @default(now())
+}
+
+model ProjectTechnology {
+  projectId     Int
+  technologyId  Int
+  project       Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  technology    Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
+  @@id([projectId, technologyId])
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  author    String
+  comment   String
+  rating    Int
+  projectId Int
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}

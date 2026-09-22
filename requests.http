@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:3333
+
+### Health
+GET {{baseUrl}}/health
+
+### Criar perfil
+POST {{baseUrl}}/api/profiles
+Content-Type: application/json
+
+{"name":"Maria Silva","email":"maria@example.com","bio":"Desenvolvedora full-stack"}
+
+### Criar tecnologia
+POST {{baseUrl}}/api/technologies
+Content-Type: application/json
+
+{"name":"Node.js","category":"Runtime"}
+
+### Listar tecnologias
+GET {{baseUrl}}/api/technologies
+
+### Criar projeto (substitua os IDs)
+POST {{baseUrl}}/api/projects
+Content-Type: application/json
+
+{"title":"DevShowcase","description":"Plataforma para exibir projetos de desenvolvedores","repositoryUrl":"https://github.com/exemplo/devshowcase","profileId":1,"technologyIds":[1]}
+
+### Listar projetos
+GET {{baseUrl}}/api/projects
+
+### Buscar perfil (substitua o ID)
+GET {{baseUrl}}/api/profiles/1
