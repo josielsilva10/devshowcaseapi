@@ -14,6 +14,6 @@ export async function getProfile(req: Request, res: Response) {
     where: { id },
     include: { projects: { include: { technologies: { include: { technology: true } }, feedbacks: true } } }
   });
-  if (!profile) return res.status(404).json({ error: 'Perfil não encontrado' });
+  if (!profile) return res.status(404).json({ error: 'Não encontrado', message: `Perfil ${id} não encontrado.` });
   return res.json(profile);
 }
