@@ -1,0 +1,59 @@
+{
+  "info": {
+    "_postman_id": "87377b08-38ee-4928-85ca-990135c88a31",
+    "name": "DevShowcase API - Etapa Final",
+    "description": "Demonstração sequencial: crie perfil, tecnologia e projeto; a coleção captura os IDs automaticamente. Depois teste filtro, feedback, upvote e erros 400/404.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3333" },
+    { "key": "profileId", "value": "" },
+    { "key": "technologyId", "value": "" },
+    { "key": "projectId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Criar perfil (guarda o ID)",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Ana Demonstração\",\n  \"email\": \"ana.demo.{{$guid}}@example.com\",\n  \"bio\": \"Desenvolvedora full-stack\"\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/profiles" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Perfil cadastrado', function () { pm.response.to.have.status(201); });", "const body = pm.response.json();", "pm.collectionVariables.set('profileId', body.id);"] } }]
+    },
+    {
+      "name": "2. Criar tecnologia (guarda o ID)",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"TypeScript-{{$guid}}\",\n  \"category\": \"Linguagem\"\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/technologies" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Tecnologia cadastrada', function () { pm.response.to.have.status(201); });", "const body = pm.response.json();", "pm.collectionVariables.set('technologyId', body.id);"] } }]
+    },
+    {
+      "name": "3. Criar projeto relacionado (guarda o ID)",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"title\": \"DevShowcase Demo\",\n  \"description\": \"Projeto para demonstrar a API DevShowcase e suas funcionalidades.\",\n  \"repositoryUrl\": \"https://github.com/exemplo/devshowcase\",\n  \"profileId\": {{profileId}},\n  \"technologyIds\": [{{technologyId}}]\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/projects" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Projeto cadastrado', function () { pm.response.to.have.status(201); });", "const body = pm.response.json();", "pm.collectionVariables.set('projectId', body.id);"] } }]
+    },
+    {
+      "name": "4. Listar projetos paginados",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/projects?page=1&limit=10" }
+    },
+    {
+      "name": "5. Filtrar por tecnologia",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/projects?technologyId={{technologyId}}&page=1&limit=10" }
+    },
+    {
+      "name": "6. Cadastrar feedback (nota e recalcular média)",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Projeto muito bem organizado!\",\n  \"author\": \"Pessoa avaliadora\"\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/projects/{{projectId}}/feedbacks" }
+    },
+    {
+      "name": "7. Incrementar upvote",
+      "request": { "method": "PUT", "url": "{{baseUrl}}/api/projects/{{projectId}}/upvote" }
+    },
+    {
+      "name": "8. Simular erro 400 (nota inválida)",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"rating\": 8,\n  \"comment\": \"Nota fora do intervalo permitido\"\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/projects/{{projectId}}/feedbacks" }
+    },
+    {
+      "name": "9. Simular erro 404 (projeto inexistente)",
+      "request": { "method": "PUT", "url": "{{baseUrl}}/api/projects/999999/upvote" }
+    },
+    {
+      "name": "10. Abrir documentação OpenAPI",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api-docs.json" }
+    }
+  ]
+}

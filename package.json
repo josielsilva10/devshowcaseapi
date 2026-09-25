@@ -7,17 +7,21 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/src/server.js",
-    "prisma:generate": "prisma generate",
+    "prisma:generate": "prisma generate --schema prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:studio": "prisma studio",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "cross-env DATABASE_URL=file:./test.db prisma db push --schema prisma/schema.prisma && cross-env DATABASE_URL=file:./test.db vitest run",
+    "test:watch": "vitest",
+    "prisma:generate:postgres": "prisma generate --schema prisma/postgres/schema.prisma",
+    "prisma:migrate:deploy:postgres": "prisma migrate deploy --schema prisma/postgres/schema.prisma",
+    "db:setup": "npm run prisma:generate && prisma migrate deploy --schema prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^6.16.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "swagger-ui-express": "^5.0.1",
     "zod": "^4.1.5"
   },
   "devDependencies": {
@@ -25,10 +29,21 @@
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.2",
     "@types/supertest": "^7.2.1",
-    "prisma": "^6.16.0",
+    "@types/swagger-ui-express": "^4.1.8",
+    "cross-env": "^10.1.0",
+    "prisma": "^6.19.3",
     "supertest": "^7.1.4",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
+  },
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "esbuild@0.28.2": true,
+    "prisma@6.19.3": true
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

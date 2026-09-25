@@ -1,31 +1,40 @@
 @baseUrl = http://localhost:3333
+@projectId = 1
+@technologyId = 1
 
 ### Health
 GET {{baseUrl}}/health
 
-### Criar perfil
-POST {{baseUrl}}/api/profiles
+### Listar projetos com paginação
+GET {{baseUrl}}/api/projects?page=1&limit=10
+
+### Filtrar por tecnologia (use o nome cadastrado)
+GET {{baseUrl}}/api/projects?technology=TypeScript&page=1&limit=10
+
+### Filtrar por ID da tecnologia
+GET {{baseUrl}}/api/projects?technologyId={{technologyId}}&page=1&limit=10
+
+### Feedback válido: nota de 1 a 5 e comentário obrigatório
+POST {{baseUrl}}/api/projects/{{projectId}}/feedbacks
 Content-Type: application/json
 
-{"name":"Maria Silva","email":"maria@example.com","bio":"Desenvolvedora full-stack"}
+{"rating":5,"comment":"Projeto muito bem organizado!","author":"Pessoa avaliadora"}
 
-### Criar tecnologia
-POST {{baseUrl}}/api/technologies
+### Upvote: cada execução soma 1
+PUT {{baseUrl}}/api/projects/{{projectId}}/upvote
+
+### Simular HTTP 400: nota fora do intervalo
+POST {{baseUrl}}/api/projects/{{projectId}}/feedbacks
 Content-Type: application/json
 
-{"name":"Node.js","category":"Runtime"}
+{"rating":8,"comment":"Nota inválida"}
 
-### Listar tecnologias
-GET {{baseUrl}}/api/technologies
+### Simular HTTP 404: projeto inexistente
+PUT {{baseUrl}}/api/projects/999999/upvote
 
-### Criar projeto (substitua os IDs)
-POST {{baseUrl}}/api/projects
-Content-Type: application/json
+### OpenAPI JSON
+GET {{baseUrl}}/api-docs.json
 
-{"title":"DevShowcase","description":"Plataforma para exibir projetos de desenvolvedores","repositoryUrl":"https://github.com/exemplo/devshowcase","profileId":1,"technologyIds":[1]}
+### Swagger UI
+GET {{baseUrl}}/api-docs/
 
-### Listar projetos
-GET {{baseUrl}}/api/projects
-
-### Buscar perfil (substitua o ID)
-GET {{baseUrl}}/api/profiles/1
