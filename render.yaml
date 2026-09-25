@@ -23,4 +23,3 @@ databases:
     plan: free
     region: ohio
     postgresMajorVersion: "17"
-    diskSizeGB: 1
